@@ -1,0 +1,46 @@
+- hosts: namenode
+  tasks:
+  - name: installing haproxy
+    package:
+       name: "haproxy"
+       state: present
+
+  - name: copying configuration file for haproxy
+    template:
+       src: "/etc/haproxy/haproxy.cfg"
+       dest: "/etc/haproxy/haproxy.cfg"
+
+  - name: starting the haproxy service
+    service:
+       name: "haproxy"
+       state: restarted
+       enabled: yes
+
+  - name: disabling firewall for haproxy port
+    firewalld:
+        port: "8080/tcp"
+        permanent: yes
+        state: disabled
+        
+ - hosts: managenode
+  tasks:
+  - name: installing httpd package
+    package:
+       name: "httpd"
+       state: present
+
+  - name: starting the webserver
+    service:
+       name: "httpd"
+       state: restarted
+       enabled: yes
+
+  - name: disabling firewall for webserver
+    firewalld:
+        port: "80/tcp"
+        permanent: yes
+        state: disabled
+        
+        
+        
+        
